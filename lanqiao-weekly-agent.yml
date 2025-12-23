@@ -1,0 +1,3031 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: 创建新周报（集成）
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai_api_compatible:0.0.27@f9ce3ff5e28f09931a3a7fca59add2d09590408f7e9a3d701b10c77a60249719
+    version: null
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/tongyi:0.1.13@10cbfe851fdf27f3c50ca2ca86293eb0c27da51ee74e58acebafd92b71c8d518
+    version: null
+kind: app
+version: 0.5.0
+workflow:
+  conversation_variables:
+  - description: 往期周报下周计划
+    id: 9793321e-e831-4b57-a0ee-0b0a9ca5450a
+    name: old_plan
+    selector:
+    - conversation
+    - old_plan
+    value: ''
+    value_type: string
+  - description: 往期周报解决方案
+    id: 38221f63-4e1b-483d-bf07-74c27806d995
+    name: old_solution
+    selector:
+    - conversation
+    - old_solution
+    value: ''
+    value_type: string
+  - description: 往期周报所遇问题
+    id: ceb9cd63-8128-4f16-9706-0d73ae2eaf5b
+    name: old_issues
+    selector:
+    - conversation
+    - old_issues
+    value: ''
+    value_type: string
+  - description: 往期周报的日期范围
+    id: 69bf421a-b52f-45f3-b84e-7db2236ab4af
+    name: target_week
+    selector:
+    - conversation
+    - target_week
+    value: ''
+    value_type: string
+  - description: 往期周报总结
+    id: e17fa5d1-ace6-4ba2-b305-e5fe55aa5794
+    name: old_summary
+    selector:
+    - conversation
+    - old_summary
+    value: ''
+    value_type: string
+  - description: 往期周报的编号
+    id: 776cbc08-f7cc-405a-b975-1f7b44da9b6e
+    name: target_report_id
+    selector:
+    - conversation
+    - target_report_id
+    value: ''
+    value_type: string
+  - description: 往期周报列表
+    id: c612712b-d6c9-4d71-bc91-1786ace53f7f
+    name: temp_report_list
+    selector:
+    - conversation
+    - temp_report_list
+    value: ''
+    value_type: string
+  - description: 原始周报周期
+    id: 4ed0f0d1-74f3-4fd5-b5a3-fa1f1a26adc0
+    name: week_detail
+    selector:
+    - conversation
+    - week_detail
+    value: ''
+    value_type: string
+  - description: 提取的用户的学习内容（无则为空）
+    id: 5b3b5747-77f9-4238-bf51-10f476d0ec15
+    name: user_content
+    selector:
+    - conversation
+    - user_content
+    value: ''
+    value_type: string
+  - description: 用户的意图
+    id: 33d7703a-c7e0-4de1-9e61-57221e51309e
+    name: user_intent
+    selector:
+    - conversation
+    - user_intent
+    value: ''
+    value_type: string
+  - description: bind云课id存储
+    id: c574babe-dd80-4d67-b656-45418804e963
+    name: new_bind_ids
+    selector:
+    - conversation
+    - new_bind_ids
+    value: ''
+    value_type: string
+  - description: 课程名存储
+    id: 166da469-5ad8-485b-98a1-53c03cbf6ad9
+    name: new_name
+    selector:
+    - conversation
+    - new_name
+    value: ''
+    value_type: string
+  - description: 云课id存储
+    id: 0bf63e6f-5076-452a-a4b8-ac45c196971e
+    name: new_yk_ids
+    selector:
+    - conversation
+    - new_yk_ids
+    value: ''
+    value_type: string
+  - description: 课程清洗后的变量
+    id: 94984f9a-fc7d-4a25-8e08-3a4c6826086d
+    name: temp_course_list
+    selector:
+    - conversation
+    - temp_course_list
+    value: ''
+    value_type: string
+  - description: 当前对话所处的步骤状态 (normal, selecting_course)
+    id: b21b2056-32c9-4849-a8d5-c858e0859647
+    name: current_step
+    selector:
+    - conversation
+    - current_step
+    value: normal
+    value_type: string
+  - description: 用户的cookie
+    id: 7d02372a-2225-4089-91b2-867ad2507b7c
+    name: cookie
+    selector:
+    - conversation
+    - cookie
+    value: ''
+    value_type: string
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: '👋 您好！我是东科蓝桥 专属周报助手。
+
+      我已经准备好为您处理繁琐的周报提交任务。
+
+
+      ⚠️ **重要提示：本系统仅支持【东科蓝桥】账号使用。**
+
+
+      ✨ **我能听懂这三种指令（推荐复制使用）：**
+
+
+      1️⃣ **极速新建（强烈推荐 🔥）**
+
+      指令格式：“新建周报，本周学了 [内容]”
+
+      👉 *示例：“新建周报，这周我学习了 Java 的多线程和 IO 流。”*
+
+      *(我会自动为您匹配课程、生成内容并提交，一步到位！)*
+
+
+      2️⃣ **普通新建**
+
+      指令格式：“新建周报”
+
+      👉 *示例：“新建周报”*
+
+      *(我会一步步引导您选择周期、课程并补充内容。)*
+
+
+      3️⃣ **更新往期**
+
+      指令格式：“我要更新周报”
+
+      👉 *示例：“更新周报”*
+
+      *(我会先列出您已提交的记录，供您选择后再进行修改。)*
+
+
+      ---
+
+      💡 **提示**：系统将自动使用您填写的账号进行登录请您务必填写您的蓝桥账号和密码。请直接在下方输入指令开始 👇'
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions:
+    - 新建周报
+    - 更新周报
+    suggested_questions_after_answer:
+      enabled: true
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1764415216045-source-1764415493687-target
+      selected: false
+      source: '1764415216045'
+      sourceHandle: source
+      target: '1764415493687'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: http-request
+      id: 1764415493687-source-1764415689772-target
+      selected: false
+      source: '1764415493687'
+      sourceHandle: source
+      target: '1764415689772'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: answer
+      id: 1764415216045-fail-branch-1764422105750-target
+      selected: false
+      source: '1764415216045'
+      sourceHandle: fail-branch
+      target: '1764422105750'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: assigner
+      id: 1764415689772-source-1764422617445-target
+      selected: false
+      source: '1764415689772'
+      sourceHandle: source
+      target: '1764422617445'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: assigner
+        targetType: llm
+      id: 1764422617445-source-1764423524293-target
+      selected: false
+      source: '1764422617445'
+      sourceHandle: source
+      target: '1764423524293'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: if-else
+      id: 1764423524293-source-1764425644544-target
+      selected: false
+      source: '1764423524293'
+      sourceHandle: source
+      target: '1764425644544'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: http-request
+      id: 1764425644544-true-1764426599423-target
+      selected: false
+      source: '1764425644544'
+      sourceHandle: 'true'
+      target: '1764426599423'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1764426599423-source-1764426731997-target
+      selected: false
+      source: '1764426599423'
+      sourceHandle: source
+      target: '1764426731997'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: if-else
+      id: 1764426731997-source-1764428307690-target
+      selected: false
+      source: '1764426731997'
+      sourceHandle: source
+      target: '1764428307690'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: answer
+      id: 1764428307690-true-1764428752191-target
+      selected: false
+      source: '1764428307690'
+      sourceHandle: 'true'
+      target: '1764428752191'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1764428957932-source-1764430081871-target
+      selected: false
+      source: '1764428957932'
+      sourceHandle: source
+      target: '1764430081871'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: assigner
+      id: 1764430081871-source-1764434698944-target
+      selected: false
+      source: '1764430081871'
+      sourceHandle: source
+      target: '1764434698944'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: assigner
+        targetType: answer
+      id: 1764434698944-source-1764432707554-target
+      selected: false
+      source: '1764434698944'
+      sourceHandle: source
+      target: '1764432707554'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: assigner
+      id: 1764432727942-source-1764435430026-target
+      selected: false
+      source: '1764432727942'
+      sourceHandle: source
+      target: '1764435430026'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: if-else
+      id: 1764078694213-source-1764435961773-target
+      selected: false
+      source: '1764078694213'
+      sourceHandle: source
+      target: '1764435961773'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: http-request
+      id: 1764435961773-false-1764415216045-target
+      selected: false
+      source: '1764435961773'
+      sourceHandle: 'false'
+      target: '1764415216045'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: code
+      id: 1764435961773-true-1764432727942-target
+      selected: false
+      source: '1764435961773'
+      sourceHandle: 'true'
+      target: '1764432727942'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: assigner
+      id: 1764423524293-source-1764475245881-target
+      selected: false
+      source: '1764423524293'
+      sourceHandle: source
+      target: '1764475245881'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: assigner
+        targetType: if-else
+      id: 1764475245881-source-1764425644544-target
+      selected: false
+      source: '1764475245881'
+      sourceHandle: source
+      target: '1764425644544'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: assigner
+        targetType: if-else
+      id: 1764435430026-source-1764475860471-target
+      selected: false
+      source: '1764435430026'
+      sourceHandle: source
+      target: '1764475860471'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: knowledge-retrieval
+      id: 1764475860471-true-1764476031554-target
+      selected: false
+      source: '1764475860471'
+      sourceHandle: 'true'
+      target: '1764476031554'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1764475860471-true-1764476041081-target
+      selected: false
+      source: '1764475860471'
+      sourceHandle: 'true'
+      target: '1764476041081'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1764476031554-source-1764476041081-target
+      selected: false
+      source: '1764476031554'
+      sourceHandle: source
+      target: '1764476041081'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1764426599423-source-1764481346057-target
+      selected: false
+      source: '1764426599423'
+      sourceHandle: source
+      target: '1764481346057'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: http-request
+      id: 1764479942972-source-1764482331078-target
+      selected: false
+      source: '1764479942972'
+      sourceHandle: source
+      target: '1764482331078'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: 1764476041081-source-1764479942972-target
+      selected: false
+      source: '1764476041081'
+      sourceHandle: source
+      target: '1764479942972'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: answer
+      id: 1764482331078-source-1764484497326-target
+      selected: false
+      source: '1764482331078'
+      sourceHandle: source
+      target: '1764484497326'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: answer
+      id: 1764482331078-fail-branch-1764484681118-target
+      selected: false
+      source: '1764482331078'
+      sourceHandle: fail-branch
+      target: '1764484681118'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: if-else
+      id: 1764481346057-source-1764428307690-target
+      selected: false
+      source: '1764481346057'
+      sourceHandle: source
+      target: '1764428307690'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: assigner
+      id: 1764428307690-cdd95ae6-67c6-4059-833d-0c84828394ab-1764486290152-target
+      selected: false
+      source: '1764428307690'
+      sourceHandle: cdd95ae6-67c6-4059-833d-0c84828394ab
+      target: '1764486290152'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: assigner
+        targetType: answer
+      id: 1764486290152-source-1764491605885-target
+      selected: false
+      source: '1764486290152'
+      sourceHandle: source
+      target: '1764491605885'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: code
+      id: 1764435961773-9e4dfe6d-c183-43c0-b23c-2377306561b9-1764491748731-target
+      selected: false
+      source: '1764435961773'
+      sourceHandle: 9e4dfe6d-c183-43c0-b23c-2377306561b9
+      target: '1764491748731'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: assigner
+      id: 1764491748731-source-1764492040197-target
+      selected: false
+      source: '1764491748731'
+      sourceHandle: source
+      target: '1764492040197'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: assigner
+        targetType: http-request
+      id: 1764492040197-source-1764428957932-target
+      selected: false
+      source: '1764492040197'
+      sourceHandle: source
+      target: '1764428957932'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: assigner
+      id: 1764475860471-false-1764494903652-target
+      selected: false
+      source: '1764475860471'
+      sourceHandle: 'false'
+      target: '1764494903652'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: assigner
+        targetType: answer
+      id: 1764494903652-source-1764495940357-target
+      selected: false
+      source: '1764494903652'
+      sourceHandle: source
+      target: '1764495940357'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: assigner
+      id: 1764435961773-8db390ef-7037-4e61-a88b-4d8a2b942628-1764496035994-target
+      selected: false
+      source: '1764435961773'
+      sourceHandle: 8db390ef-7037-4e61-a88b-4d8a2b942628
+      target: '1764496035994'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: assigner
+        targetType: if-else
+      id: 1764496035994-source-1764475860471-target
+      selected: false
+      source: '1764496035994'
+      sourceHandle: source
+      target: '1764475860471'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: http-request
+      id: 1764425644544-877c01a3-79ae-44c0-a828-48952d53fb6c-1764510324094-target
+      selected: false
+      source: '1764425644544'
+      sourceHandle: 877c01a3-79ae-44c0-a828-48952d53fb6c
+      target: '1764510324094'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1764510324094-source-1764511080329-target
+      selected: false
+      source: '1764510324094'
+      sourceHandle: source
+      target: '1764511080329'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: assigner
+      id: 1764511080329-source-1764511882046-target
+      selected: false
+      source: '1764511080329'
+      sourceHandle: source
+      target: '1764511882046'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: assigner
+        targetType: answer
+      id: 1764511882046-source-1764512189067-target
+      selected: false
+      source: '1764511882046'
+      sourceHandle: source
+      target: '1764512189067'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: code
+      id: 1764435961773-30978275-ae9f-485d-a2d1-01d79a620dfd-1764513411691-target
+      selected: false
+      source: '1764435961773'
+      sourceHandle: 30978275-ae9f-485d-a2d1-01d79a620dfd
+      target: '1764513411691'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: assigner
+      id: 1764513411691-source-1764513719414-target
+      selected: false
+      source: '1764513411691'
+      sourceHandle: source
+      target: '1764513719414'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: assigner
+        targetType: answer
+      id: 1764513719414-source-1764514840061-target
+      selected: false
+      source: '1764513719414'
+      sourceHandle: source
+      target: '1764514840061'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: assigner
+      id: 1764435961773-d587dd21-9033-46b7-aa9f-6c80a968861e-1764516486086-target
+      selected: false
+      source: '1764435961773'
+      sourceHandle: d587dd21-9033-46b7-aa9f-6c80a968861e
+      target: '1764516486086'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: assigner
+        targetType: llm
+      id: 1764516486086-source-1764516876254-target
+      selected: false
+      source: '1764516486086'
+      sourceHandle: source
+      target: '1764516876254'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: answer
+      id: 1764517829108-source-1764518069509-target
+      selected: false
+      source: '1764517829108'
+      sourceHandle: source
+      target: '1764518069509'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: answer
+      id: 1764517829108-fail-branch-1764518095133-target
+      selected: false
+      source: '1764517829108'
+      sourceHandle: fail-branch
+      target: '1764518095133'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: answer
+      id: 1764425644544-false-1764518620531-target
+      selected: false
+      source: '1764425644544'
+      sourceHandle: 'false'
+      target: '1764518620531'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: 1764516876254-source-1764750231351-target
+      source: '1764516876254'
+      sourceHandle: source
+      target: '1764750231351'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: http-request
+      id: 1764750231351-source-1764517829108-target
+      selected: false
+      source: '1764750231351'
+      sourceHandle: source
+      target: '1764517829108'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: assigner
+      id: 1764428307690-false-17644855392000-target
+      selected: false
+      source: '1764428307690'
+      sourceHandle: 'false'
+      target: '17644855392000'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: assigner
+        targetType: http-request
+      id: 17644855392000-source-1764428957932-target
+      selected: false
+      source: '17644855392000'
+      sourceHandle: source
+      target: '1764428957932'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 开始
+        type: start
+        variables:
+        - default: ''
+          hint: ''
+          label: 蓝桥账号
+          max_length: 48
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: lanqiao_user
+        - default: ''
+          hint: ''
+          label: 蓝桥密码
+          max_length: 48
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: lanqiao_pass
+      height: 134
+      id: '1764078694213'
+      position:
+        x: 317.51429711474077
+        y: -99.69313676899442
+      positionAbsolute:
+        x: 317.51429711474077
+        y: -99.69313676899442
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - id: key-value-83
+            key: ''
+            type: text
+            value: "{\n  \"login_str\": \"{{#1764078694213.lanqiao_user#}}\",\n  \"\
+              password\": \"{{#1764078694213.lanqiao_pass#}}\",\n  \"usertype\": 0\n\
+              }"
+          type: json
+        error_strategy: fail-branch
+        headers: 'content-type:application/json
+
+          saas-slug:dykj
+
+          origin:https://saas.lanqiao.cn
+
+          referer:https://saas.lanqiao.cn/
+
+          accept:application/json, text/plain, */*'
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 获取cookie节点
+        type: http-request
+        url: https://passport.lanqiao.cn/api/v1/login/
+        variables: []
+      height: 172
+      id: '1764415216045'
+      position:
+        x: 1564.9556555088468
+        y: 196.8703181413196
+      positionAbsolute:
+        x: 1564.9556555088468
+        y: 196.8703181413196
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        code: "function main(inputs) {\n  let h = inputs?.input_headers;\n  if (h\
+          \ == null) return { cookie: \"\" };\n  if (typeof h === \"string\") {\n\
+          \    try { h = JSON.parse(h); } catch { return { cookie: \"\" }; }\n  }\n\
+          \  const raw = h[\"set-cookie\"] || h[\"Set-Cookie\"] || \"\";\n  const\
+          \ parts = Array.isArray(raw) ? raw : (raw ? raw.split(/,\\s*(?=[^;=\\s]+=[^;]+)/)\
+          \ : []);\n  const map = {};\n  for (const c of parts) {\n    const m = String(c).match(/^\\\
+          s*([^=]+)=([^;]*)/);\n    if (m) map[m[1]] = m[2];\n  }\n  if (map[\"lqtoken\"\
+          ]) return { cookie: `lqtoken=${map[\"lqtoken\"]}` };\n  const joined = Object.entries(map).map(([k,v])\
+          \ => `${k}=${v}`).join(\"; \");\n  return { cookie: joined };\n}\nmodule.exports\
+          \ = main;"
+        code_language: javascript
+        outputs:
+          cookie:
+            children: null
+            type: string
+        selected: false
+        title: 提取cookie节点
+        type: code
+        variables:
+        - value_selector:
+          - '1764415216045'
+          - headers
+          value_type: object
+          variable: input_headers
+      height: 51
+      id: '1764415493687'
+      position:
+        x: 1936.7785783879465
+        y: -41.14320013928159
+      positionAbsolute:
+        x: 1936.7785783879465
+        y: -41.14320013928159
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: []
+          type: none
+        headers: 'Cookie:{{#1764415493687.cookie#}}
+
+          saas-slug:dykj:*
+
+          origin:https://saas.lanqiao.cn
+
+          referer:https://saas.lanqiao.cn/
+
+          accept:application/json, text/plain, */*'
+        method: get
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 验证cookie节点
+        type: http-request
+        url: https://opcenter.lanqiao.cn/api/v1/oms/saas/dykj/simple/
+        variables: []
+      height: 136
+      id: '1764415689772'
+      position:
+        x: 2254.861275083997
+        y: -41.14320013928159
+      positionAbsolute:
+        x: 2254.861275083997
+        y: -41.14320013928159
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: 登录失败，请重新输入正确的账号和密码
+        selected: false
+        title: '登陆失败回复 '
+        type: answer
+        variables: []
+      height: 115
+      id: '1764422105750'
+      position:
+        x: 1936.7785783879465
+        y: 318.3716903484824
+      positionAbsolute:
+        x: 1936.7785783879465
+        y: 318.3716903484824
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764415493687'
+          - cookie
+          variable_selector:
+          - conversation
+          - cookie
+          write_mode: over-write
+        selected: false
+        title: cookie变量赋值
+        type: assigner
+        version: '2'
+      height: 83
+      id: '1764422617445'
+      position:
+        x: 2598.470299827489
+        y: -41.14320013928159
+      positionAbsolute:
+        x: 2598.470299827489
+        y: -41.14320013928159
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: qwen-flash
+          provider: langgenius/openai_api_compatible/openai_api_compatible
+        prompt_template:
+        - id: 1dfda6c5-6362-4bfb-816b-e22bb086a428
+          role: system
+          text: "你是一个智能周报助手的意图识别大脑。\n你的任务是分析用户的输入{{#sys.query#}}，将其归类为“新建”、“更新”或“闲聊”三类之一，并提取关键信息。\n\
+            \n### 意图判断规则 (Intent Logic):\n\n1. **CREATE (新建)**:\n   - 用户明确说“新建”、“写周报”、“新周报”、“提交周报”。\n\
+            \   - 或者用户直接陈述学习内容（例如：“这周学了Java”、“看完了V模型”），而没有明确说要更新。\n   - 包含“开始”等明确的启动业务指令。\n\
+            \n2. **UPDATE (更新)**:\n   - 只有当用户明确提到“更新”、“修改”、“补写”、“改一下”、“往期”时，才判定为更新。\n\
+            \n3. **CHAT (闲聊)**:\n   - 用户发送问候语（如“你好”、“Hello”、“Hi”）。\n   - 用户询问身份（如“你是谁”、“你能做什么”）。\n\
+            \   - 其他与“写周报”业务完全无关的对话。\n   \n\n### 内容提取规则 (Content Extraction):\n- 如果是\
+            \ create 或 update：提取出具体的**学习知识点**（去除“帮我写”等指令词）。\n- 如果是 chat：content 设为空字符串\
+            \ \"\"。\n\n### 输出要求:\n请务必输出标准的 JSON 格式。"
+        - id: 561ecbfa-0f54-428b-8c9c-cb4a526b5db6
+          role: user
+          text: '用户当前的输入是：
+
+            "{{#sys.query#}}"
+
+
+            请分析并输出 JSON。'
+        selected: false
+        structured_output:
+          schema:
+            additionalProperties: false
+            properties:
+              content:
+                description: 提取的学习内容，闲聊时为空
+                type: string
+              intent:
+                description: '用户意图: ''create'' (新建), ''update'' (更新), 或 ''chat'' (闲聊)'
+                enum:
+                - create
+                - update
+                - chat
+                type: string
+            required: []
+            type: object
+        structured_output_enabled: true
+        title: 意图分类llm
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1764423524293'
+      position:
+        x: 2932.7634446245893
+        y: -41.14320013928159
+      positionAbsolute:
+        x: 2932.7634446245893
+        y: -41.14320013928159
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: c4f1c249-108a-4ec4-afa0-f5ed5b26dc2a
+            value: create
+            varType: object
+            variable_selector:
+            - '1764423524293'
+            - structured_output
+            - intent
+          id: 'true'
+          logical_operator: and
+        - case_id: 877c01a3-79ae-44c0-a828-48952d53fb6c
+          conditions:
+          - comparison_operator: is
+            id: 1f5c90f2-7b8f-488f-b2ae-7a3043194a32
+            value: update
+            varType: object
+            variable_selector:
+            - '1764423524293'
+            - structured_output
+            - intent
+          id: 877c01a3-79ae-44c0-a828-48952d53fb6c
+          logical_operator: and
+        selected: false
+        title: 意图分支
+        type: if-else
+      height: 171
+      id: '1764425644544'
+      position:
+        x: 3561.303208118904
+        y: -41.14320013928159
+      positionAbsolute:
+        x: 3561.303208118904
+        y: -41.14320013928159
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: []
+          type: none
+        headers: 'Accept:application/json, text/plain, */*
+
+          saas-slug:dykj:student
+
+          Cookie:{{#conversation.cookie#}}'
+        method: get
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 获取可用周报周期
+        type: http-request
+        url: https://opcenter.lanqiao.cn/api/v1/student/myweeks-times/
+        variables: []
+      height: 152
+      id: '1764426599423'
+      position:
+        x: 3858.8037021398295
+        y: -175.38889807543578
+      positionAbsolute:
+        x: 3858.8037021398295
+        y: -175.38889807543578
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        code: "function main(inputs) {\n  let list = [];\n  \n  // 1. 安全解析输入字符串\n\
+          \  let bodyObj = {};\n  try {\n    if (typeof inputs.api_body === 'string')\
+          \ {\n        bodyObj = JSON.parse(inputs.api_body);\n    } else {\n    \
+          \    bodyObj = inputs.api_body;\n    }\n  } catch (e) {\n    // 解析失败，bodyObj\
+          \ 保持为空对象\n  }\n\n  // 2. 暴力提取列表 (兼容多种返回格式)\n  \n  // 情况 A: 直接是 Dify 工作流返回的结构\
+          \ (包含 available_times_list 字符串)\n  if (bodyObj.available_times_list) {\n\
+          \      try {\n          // 尝试再次解析内部字符串\n          list = JSON.parse(bodyObj.available_times_list);\n\
+          \      } catch (e) {\n          // 如果不是字符串，可能已经是数组了\n          list = bodyObj.available_times_list;\n\
+          \      }\n  } \n  // 情况 B: 原始 API 返回的结构 (包含 data 数组)\n  else if (Array.isArray(bodyObj.data))\
+          \ {\n      // 提取 start_at 和 end_at 拼成字符串\n      list = bodyObj.data.map(item\
+          \ => {\n          if (item.start_at && item.end_at) {\n              return\
+          \ `${item.start_at}~${item.end_at}`;\n          }\n          return null;\
+          \ // 过滤无效项\n      }).filter(i => i !== null);\n  }\n  // 情况 C: data 本身就是个数组\
+          \ (少见但可能)\n  else if (Array.isArray(bodyObj)) {\n      list = bodyObj;\n\
+          \  }\n\n  // 确保 list 是一个数组\n  if (!Array.isArray(list)) {\n      list =\
+          \ [];\n  }\n\n  // 3. 核心判断逻辑\n  let status = \"ERROR\";\n  let target_week\
+          \ = \"\";\n  let display_text = \"\";\n\n  if (list.length === 0) {\n  \
+          \    status = \"EMPTY\"; \n  } else if (list.length === 1) {\n      status\
+          \ = \"AUTO\";  \n      target_week = list[0];\n  } else {\n      status\
+          \ = \"ASK\";   \n      display_text = list.map((item, i) => `${i+1}. ${item}`).join('\\\
+          n');\n  }\n\n  return { \n    status,        \n    target_week,   \n   \
+          \ display_text   \n  };\n}"
+        code_language: javascript
+        outputs:
+          display_text:
+            children: null
+            type: string
+          status:
+            children: null
+            type: string
+          target_week:
+            children: null
+            type: string
+        selected: false
+        title: 检测周报周期数量
+        type: code
+        variables:
+        - value_selector:
+          - '1764426599423'
+          - body
+          value_type: string
+          variable: api_body
+      height: 51
+      id: '1764426731997'
+      position:
+        x: 4495.920068966316
+        y: -175.38889807543578
+      positionAbsolute:
+        x: 4495.920068966316
+        y: -175.38889807543578
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: contains
+            id: bdf3a119-9802-4c74-babb-75f2b62e4bb3
+            value: EMPTY
+            varType: string
+            variable_selector:
+            - '1764426731997'
+            - status
+          id: 'true'
+          logical_operator: and
+        - case_id: cdd95ae6-67c6-4059-833d-0c84828394ab
+          conditions:
+          - comparison_operator: contains
+            id: 154f3409-78ea-4d9b-a029-ef89c07d646f
+            value: ASK
+            varType: string
+            variable_selector:
+            - '1764426731997'
+            - status
+          id: cdd95ae6-67c6-4059-833d-0c84828394ab
+          logical_operator: and
+        selected: false
+        title: 周期检测分支
+        type: if-else
+      height: 171
+      id: '1764428307690'
+      position:
+        x: 5095.260920714605
+        y: -173.48261204489026
+      positionAbsolute:
+        x: 5095.260920714605
+        y: -173.48261204489026
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: 本周周报已创建或未开放。您可以尝试进行更新往期周报
+        selected: false
+        title: 没有新周报的回复
+        type: answer
+        variables: []
+      height: 115
+      id: '1764428752191'
+      position:
+        x: 5420.873017860484
+        y: -330.4897390557453
+      positionAbsolute:
+        x: 5420.873017860484
+        y: -330.4897390557453
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: []
+          type: none
+        headers: 'Accept:application/json, text/plain, */*
+
+          saas-slug:dykj:student
+
+          Cookie:{{#conversation.cookie#}}'
+        method: get
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 获取可用课程列表
+        type: http-request
+        url: https://opcenter.lanqiao.cn/api/v1/svc/sms/evaluation/student/course-list/
+        variables: []
+      height: 152
+      id: '1764428957932'
+      position:
+        x: 5713.365947945546
+        y: 134.665415490035
+      positionAbsolute:
+        x: 5713.365947945546
+        y: 134.665415490035
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        code: "/*\n * [工作流 2: WF_获取可用课程列表] 的代码节点 (V2 美化版)\n * 目标：\n * 1. 解析数据。\n *\
+          \ 2. 输出 result: 包含 ID 的完整 JSON（供后续流程使用）。\n * 3. 输出 display_text: 仅包含 \"\
+          序号. 课程名\" 的纯文本（供展示和选择）。\n */\n\nfunction main(inputs) {\n  // 1. 获取输入\n\
+          \  let body = inputs?.input_body;\n\n  // 2. 稳健的检查与解析\n  if (body == null)\
+          \ return { result: \"[]\", display_text: \"无可用课程\" }; \n  if (typeof body\
+          \ === 'string') {\n    try { body = JSON.parse(body); } catch { return {\
+          \ result: \"[]\", display_text: \"数据解析错误\" }; }\n  }\n  if (typeof body\
+          \ !== 'object' || body === null) return { result: \"[]\", display_text:\
+          \ \"无可用课程\" };\n\n  // 3. 提取数据源\n  let sourceArray = [];\n  if (body &&\
+          \ Array.isArray(body.data)) {\n    sourceArray = body.data;\n  }\n\n  //\
+          \ 4. 转换数据 (同时生成 JSON 对象和美观的文本)\n  const cleanList = sourceArray.map((item,\
+          \ index) => {\n    // 序号从 1 开始\n    const currentNum = index + 1;\n    const\
+          \ name = item?.course_name ?? \"未知课程\";\n    \n    return {\n      index:\
+          \ currentNum,          // 显式加入序号\n      name: name,\n      bind_id: item?.course_id\
+          \ ?? null,\n      yk_id: item?.course_id_yk ?? null,\n      // 预生成单行显示文本，方便调试\n\
+          \      _display: `${currentNum}. ${name}` \n    };\n  });\n\n  // 5. 生成纯文本列表\
+          \ (这就是您要的“美观”部分)\n  // 输出示例:\n  // 1. GJ-02-Linux 基础 1.8\n  // 2. GJ-03-Java\
+          \ 程序设计基础 1.8\n  const displayString = cleanList.map(item => item._display).join('\\\
+          n');\n\n  // 6. 返回结果\n  return { \n    // 完整数据 (JSON 字符串)\n    result: JSON.stringify(cleanList),\
+          \ \n    // 美观列表 (纯文本字符串)\n    display_text: displayString || \"未找到关联课程\"\
+          \ \n  };\n}\n\nmodule.exports = main;"
+        code_language: javascript
+        outputs:
+          display_text:
+            children: null
+            type: string
+          result:
+            children: null
+            type: string
+        selected: false
+        title: 代码执行 (课程清洗)
+        type: code
+        variables:
+        - value_selector:
+          - '1764428957932'
+          - body
+          value_type: string
+          variable: input_body
+      height: 51
+      id: '1764430081871'
+      position:
+        x: 6015.365947945546
+        y: 134.665415490035
+      positionAbsolute:
+        x: 6015.365947945546
+        y: 134.665415490035
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: 周期已锁定。请回复序号选择关联课程： {{#1764430081871.display_text#}}
+        selected: false
+        title: 周期锁定回复
+        type: answer
+        variables: []
+      height: 118
+      id: '1764432707554'
+      position:
+        x: 6633.101213830572
+        y: 134.665415490035
+      positionAbsolute:
+        x: 6633.101213830572
+        y: 134.665415490035
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        code: "function main(inputs) {\n  // 初始化默认返回值 (确保所有输出变量都存在)\n  let result\
+          \ = {\n    status: \"FAIL\",\n    name: \"\",\n    bind_ids: \"[]\",\n \
+          \   yk_ids: \"[]\"\n  };\n\n  try {\n    // 1. 解析课程列表数据\n    let courses\
+          \ = [];\n    if (typeof inputs.course_json === 'string') {\n        try\
+          \ {\n            courses = JSON.parse(inputs.course_json);\n        } catch(e)\
+          \ { return result; }\n    } else if (Array.isArray(inputs.course_json))\
+          \ {\n        courses = inputs.course_json;\n    }\n\n    if (!courses ||\
+          \ courses.length === 0) return result;\n\n    // 2. 解析用户输入的多选数字\n    //\
+          \ 将中文逗号替换为英文逗号，然后用非数字字符(逗号、空格等)分割\n    let inputStr = String(inputs.user_input\
+          \ || \"\").trim();\n    // 正则解释：split(/[^0-9]+/) 会把 \"1,2 3，4\" 拆分成 [\"\
+          1\", \"2\", \"3\", \"4\"]\n    let inputNumbers = inputStr.replace(/，/g,\
+          \ ',').split(/[^0-9]+/);\n\n    // 3. 遍历数字，收集 ID\n    let selectedBindIds\
+          \ = [];\n    let selectedYkIds = [];\n    let selectedNames = [];\n\n  \
+          \  inputNumbers.forEach(numStr => {\n        let index = parseInt(numStr);\n\
+          \        // 检查索引有效性 (用户输入1对应数组下标0)\n        let arrayIndex = index - 1;\n\
+          \        \n        if (!isNaN(index) && arrayIndex >= 0 && arrayIndex <\
+          \ courses.length) {\n            let item = courses[arrayIndex];\n     \
+          \       \n            // 收集数据 (如果ID存在)\n            if (item.bind_id) selectedBindIds.push(item.bind_id);\n\
+          \            if (item.yk_id) selectedYkIds.push(item.yk_id);\n         \
+          \   if (item.name) selectedNames.push(item.name);\n        }\n    });\n\n\
+          \    // 4. 判断是否至少选中了一个\n    if (selectedBindIds.length > 0) {\n        result.status\
+          \ = \"SUCCESS\";\n        // 将 ID 数组转为 JSON 字符串，例如 \"[1001, 1002]\"\n  \
+          \      result.bind_ids = JSON.stringify(selectedBindIds);\n        result.yk_ids\
+          \ = JSON.stringify(selectedYkIds);\n        // 将多个课程名拼接，例如 \"Java基础, MySQL数据库\"\
+          \n        result.name = selectedNames.join(\", \");\n    }\n\n  } catch\
+          \ (e) {\n    // 错误处理\n  }\n\n  return result;\n}\n\nmodule.exports = main;"
+        code_language: javascript
+        outputs:
+          bind_ids:
+            children: null
+            type: string
+          name:
+            children: null
+            type: string
+          status:
+            children: null
+            type: string
+          yk_ids:
+            children: null
+            type: string
+        selected: false
+        title: 代码执行 (选课逻辑)
+        type: code
+        variables:
+        - value_selector:
+          - conversation
+          - temp_course_list
+          value_type: string
+          variable: course_json
+        - value_selector:
+          - sys
+          - query
+          value_type: string
+          variable: user_input
+      height: 51
+      id: '1764432727942'
+      position:
+        x: 1936.7785783879465
+        y: -893.1032374692558
+      positionAbsolute:
+        x: 1936.7785783879465
+        y: -893.1032374692558
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: constant
+          operation: set
+          value: selecting_course
+          variable_selector:
+          - conversation
+          - current_step
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764430081871'
+          - result
+          variable_selector:
+          - conversation
+          - temp_course_list
+          write_mode: over-write
+        selected: false
+        title: 环境改变，课程赋值
+        type: assigner
+        version: '2'
+      height: 109
+      id: '1764434698944'
+      position:
+        x: 6314.52311361065
+        y: 134.665415490035
+      positionAbsolute:
+        x: 6314.52311361065
+        y: 134.665415490035
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: constant
+          operation: set
+          value: normal
+          variable_selector:
+          - conversation
+          - current_step
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764432727942'
+          - bind_ids
+          variable_selector:
+          - conversation
+          - new_bind_ids
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764432727942'
+          - name
+          variable_selector:
+          - conversation
+          - new_name
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764432727942'
+          - yk_ids
+          variable_selector:
+          - conversation
+          - new_yk_ids
+          write_mode: over-write
+        selected: false
+        title: 环境恢复，选课逻辑3个变量赋值
+        type: assigner
+        version: '2'
+      height: 161
+      id: '1764435430026'
+      position:
+        x: 2254.861275083997
+        y: -893.1032374692558
+      positionAbsolute:
+        x: 2254.861275083997
+        y: -893.1032374692558
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: 936803bf-c6b2-429f-8ab7-1bc2e9c009ac
+            value: selecting_course
+            varType: string
+            variable_selector:
+            - conversation
+            - current_step
+          id: 'true'
+          logical_operator: and
+        - case_id: 8db390ef-7037-4e61-a88b-4d8a2b942628
+          conditions:
+          - comparison_operator: is
+            id: 9c3343a9-9e76-4a08-9bb5-7002e8c7df4e
+            value: waiting_for_content
+            varType: string
+            variable_selector:
+            - conversation
+            - current_step
+          id: 8db390ef-7037-4e61-a88b-4d8a2b942628
+          logical_operator: and
+        - case_id: 9e4dfe6d-c183-43c0-b23c-2377306561b9
+          conditions:
+          - comparison_operator: is
+            id: b4f68ebf-62bb-4808-8f2d-85aa182dc11f
+            value: selecting_week
+            varType: string
+            variable_selector:
+            - conversation
+            - current_step
+          id: 9e4dfe6d-c183-43c0-b23c-2377306561b9
+          logical_operator: and
+        - case_id: 30978275-ae9f-485d-a2d1-01d79a620dfd
+          conditions:
+          - comparison_operator: is
+            id: 5ccc5eba-77ce-446c-9988-d9eab2ed3956
+            value: selecting_report_to_update
+            varType: string
+            variable_selector:
+            - conversation
+            - current_step
+          id: 30978275-ae9f-485d-a2d1-01d79a620dfd
+          logical_operator: and
+        - case_id: d587dd21-9033-46b7-aa9f-6c80a968861e
+          conditions:
+          - comparison_operator: is
+            id: 4f094ee3-7bb9-41a4-97b2-9621758e8cdb
+            value: waiting_for_update_content
+            varType: string
+            variable_selector:
+            - conversation
+            - current_step
+          logical_operator: and
+        selected: false
+        title: 全局模式分支
+        type: if-else
+      height: 315
+      id: '1764435961773'
+      position:
+        x: 639.9385744620831
+        y: -78.69313676899442
+      positionAbsolute:
+        x: 639.9385744620831
+        y: -78.69313676899442
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764423524293'
+          - structured_output
+          - intent
+          variable_selector:
+          - conversation
+          - user_intent
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764423524293'
+          - structured_output
+          - content
+          variable_selector:
+          - conversation
+          - user_content
+          write_mode: over-write
+        selected: false
+        title: 用户意图及第一步学习内容赋值
+        type: assigner
+        version: '2'
+      height: 109
+      id: '1764475245881'
+      position:
+        x: 3255.5789652622125
+        y: -175.38889807543578
+      positionAbsolute:
+        x: 3255.5789652622125
+        y: -175.38889807543578
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: not empty
+            id: 6f7423ce-0c06-4fdc-96b5-65f35e8525c0
+            value: ''
+            varType: string
+            variable_selector:
+            - conversation
+            - user_content
+          id: 'true'
+          logical_operator: and
+        selected: false
+        title: 第二次检索用户是否输入学习内容
+        type: if-else
+      height: 123
+      id: '1764475860471'
+      position:
+        x: 2598.470299827489
+        y: -893.1032374692558
+      positionAbsolute:
+        x: 2598.470299827489
+        y: -893.1032374692558
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        dataset_ids:
+        - GSB5/o+6+twFKZUXLTlZ6GMJDxfTI8nTasOViKxe58fZGP+1Ckkm9S/LKQ3ijKiW
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: reranking_model
+          reranking_model:
+            model: gte-rerank
+            provider: langgenius/tongyi/tongyi
+          top_k: 4
+        query_variable_selector:
+        - conversation
+        - user_content
+        retrieval_mode: multiple
+        selected: false
+        title: 学习内容知识检索
+        type: knowledge-retrieval
+      height: 89
+      id: '1764476031554'
+      position:
+        x: 2932.7634446245893
+        y: -953.177718762886
+      positionAbsolute:
+        x: 2932.7634446245893
+        y: -953.177718762886
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1764476031554'
+          - result
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: qwen3-max
+          provider: langgenius/openai_api_compatible/openai_api_compatible
+        prompt_template:
+        - id: 19e3f0d2-9309-43b0-8552-4e3328e31700
+          role: system
+          text: "# --- 1. 核心指令：你的角色 --- 你将扮演一个大专生 。 你的任务是根据我提供的“本周学习要点”，用你的口吻，写一份内容充实、细节合理的周报草稿。\n\
+            # --- 2. 关键风格：如何扮演大专生（很重要） ---\n口吻： 保持口语化、接地气，就像一个学生在写一篇详细的学习日记。\n水平：\
+            \ 你是一个正在学习的学生，不是一个专家。\n【新要求】：内容要充实、言之有物。适当描述你的思考过程、卡住的细节，以及你是怎么想明白的，但不要为了凑字数而过度堆砌。\n\
+            # --- 3. 关键任务：如何写四个字段 ---\nsummary (总结):\n用你自己的话说说这周学了啥。\n(推荐!) 可以分成 (一)、(二)\
+            \ 几点来说明，并简述你对每个知识点的个人体会。\nencountered_issues (所遇问题):\n【这是重点，要写清楚！】\n(推荐!)\
+            \ 写明你具体卡在哪里了。比如： \"我搞不懂 A 和 B 有啥区别，我以为 A 是用来...的，结果一用就报错 xxx。\"\n(推荐!)\
+            \ 或者 \"这个 xxx 属性到底是干啥的？我看教程是这么写的，自己一用就不生效，卡了我好久。\"\nsolution (解决方案):\n\
+            【写清楚解决过程。】\n(推荐!) 描述你是怎么一步步想明白的。比如：\"我最后去查了好多博客和资料，才明白原来 A 和 B 的区别是...。\"\
+            \n(推荐!) \"最后还是看别人的笔记，发现我少写了一行 ...，加上去就好了。下次一定得细心点。\"\nnext_week_plan (下周计划):\n\
+            【稍微具体一点，不要就一句话。】\n(推荐!) \"下周我准备把 XX 课的剩下几节看完，特别是 yyy 那个部分。然后我还想做个小练习，把这周学的\
+            \ xxx 真正用上。\"\n# --- 4. 你的输出格式 --- 你必须严格按照 JSON 格式返回，只返回 JSON，不要有其他任何文字。\n\
+            JSON\n{\n  \"summary\": \"...\",\n  \"encountered_issues\": \"...\",\n\
+            \  \"solution\": \"...\",\n  \"next_week_plan\": \"...\"\n}"
+        - id: f4559898-e608-485c-9d61-722b28e66b66
+          role: user
+          text: "好了，这是你这次需要处理的信息。请根据你的角色和风格，帮我生成周报草稿。\n\n# 1. 知识库上下文 (供你参考的知识点)\n\
+            {{#context#}}\n\n# 2. 报告主题 (课程名)\n{{#conversation.new_name#}}\n\n# 3.\
+            \ 本周学习要点 (我的输入)\n{{#conversation.user_content#}}\n\n# 4. 写作结构 (你只需要参考这个结构)\n\
+            <example>\n{\n  \"summary\": \"本周重点学习了 jQuery 的选择器相关知识...\",\n  \"encountered_issues\"\
+            : \"选择器语法混淆：...\",\n  \"solution\": \"针对选择器语法混淆：...\",\n  \"next_week_plan\"\
+            : \"周一：jQuery 筛选选择器与过滤方法...\"\n}\n</example>"
+        selected: false
+        title: '周报生成LLM '
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1764476041081'
+      position:
+        x: 3255.5789652622125
+        y: -860.9433617991193
+      positionAbsolute:
+        x: 3255.5789652622125
+        y: -860.9433617991193
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        code: "function main(inputs) {\n  // 1. 解析 LLM 返回的内容 (清洗 Markdown 标记)\n  let\
+          \ content = {};\n  try {\n    let text = inputs.llm_response || \"{}\";\n\
+          \    // 去掉可能存在的 ```json 和 ``` 包裹\n    text = text.replace(/```json/g, \"\
+          \").replace(/```/g, \"\").trim();\n    content = JSON.parse(text);\n  }\
+          \ catch (e) {\n    // 兜底：如果 LLM 发疯输出了非 JSON，给个默认值防止流程崩溃\n    content = {\n\
+          \        summary: \"自动生成内容解析失败，请手动修改。\",\n        encountered_issues: \"\
+          无\",\n        solution: \"无\",\n        next_week_plan: \"无\"\n    };\n\
+          \  }\n\n  // 2. 清洗 ID (确保转为数字数组 [123])\n  function cleanAndNormalize(input)\
+          \ {\n      if (!input) return [];\n      let parsed = input;\n      try\
+          \ {\n        while (typeof parsed === 'string') {\n          parsed = JSON.parse(parsed);\n\
+          \        }\n      } catch (e) {}\n      if (!parsed) return [];\n      \n\
+          \      let arr = Array.isArray(parsed) ? parsed : [parsed];\n      // 强制转数字并过滤\n\
+          \      return arr.map(item => parseInt(item, 10)).filter(n => !isNaN(n));\n\
+          \  }\n\n  // 3. 组装最终的 API Payload\n  const finalPayload = {\n    week_detail:\
+          \ inputs.week,\n    summary: content.summary || \"\",\n    encountered_issues:\
+          \ content.encountered_issues || \"\",\n    solution: content.solution ||\
+          \ \"\",\n    next_week_plan: content.next_week_plan || \"\",\n    \n   \
+          \ // 使用清洗后的 ID\n    bind_courses: cleanAndNormalize(inputs.bind_str),\n\
+          \    yk_course_ids: cleanAndNormalize(inputs.yk_str)\n  };\n\n  // 4. 返回字符串给\
+          \ HTTP 节点\n  return {\n    final_post_body: JSON.stringify(finalPayload)\n\
+          \  };\n}"
+        code_language: javascript
+        outputs:
+          final_post_body:
+            children: null
+            type: string
+        selected: false
+        title: 周报数据清洗
+        type: code
+        variables:
+        - value_selector:
+          - '1764476041081'
+          - text
+          value_type: string
+          variable: llm_response
+        - value_selector:
+          - conversation
+          - new_bind_ids
+          value_type: string
+          variable: bind_str
+        - value_selector:
+          - conversation
+          - new_yk_ids
+          value_type: string
+          variable: yk_str
+        - value_selector:
+          - conversation
+          - week_detail
+          value_type: string
+          variable: week
+      height: 51
+      id: '1764479942972'
+      position:
+        x: 3561.303208118904
+        y: -860.9433617991193
+      positionAbsolute:
+        x: 3561.303208118904
+        y: -860.9433617991193
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        code: "function main(inputs) {\n  let list = [];\n  let rawList = []; \n \
+          \ \n  // 1. 解析原始 JSON\n  try {\n    const resp = JSON.parse(inputs.api_body\
+          \ || \"{}\");\n    \n    // 针对您的数据结构: {\"data\": [{\"start_at\": \"...\"\
+          , \"end_at\": \"...\"}]}\n    if (Array.isArray(resp.data)) {\n        rawList\
+          \ = resp.data;\n    } \n    // 兼容旧逻辑\n    else if (resp.available_times_list)\
+          \ {\n        try { rawList = JSON.parse(resp.available_times_list); } catch(e){}\n\
+          \    }\n  } catch (e) { rawList = []; }\n\n  // 2. 格式化为 \"YYYY-MM-DD~YYYY-MM-DD\"\
+          \ 标准字符串\n  list = rawList.map(item => {\n      if (typeof item === 'string')\
+          \ return item;\n      if (item.start_at && item.end_at) {\n          return\
+          \ `${item.start_at}~${item.end_at}`;\n      }\n      return null;\n  }).filter(i\
+          \ => i !== null);\n\n  // 3. 逻辑判断\n  let status = \"ERROR\";\n  let target_week\
+          \ = \"\"; \n  let display_text = \"\";\n\n  if (list.length === 0) {\n \
+          \     status = \"EMPTY\"; \n  } else if (list.length === 1) {\n      status\
+          \ = \"AUTO\";  \n      target_week = list[0]; \n  } else {\n      status\
+          \ = \"ASK\";   \n      display_text = list.map((item, i) => `${i+1}. ${item}`).join('\\\
+          n');\n  }\n\n  // 4. 输出 (关键补充!)\n  return { \n    status, \n    target_week,\
+          \  \n    display_text,\n    // [新增] 输出清洗后的完整列表，供多周期分支存入会话变量\n    raw_list:\
+          \ JSON.stringify(list) \n  };\n}"
+        code_language: javascript
+        outputs:
+          display_text:
+            children: null
+            type: string
+          raw_list:
+            children: null
+            type: string
+          status:
+            children: null
+            type: string
+          target_week:
+            children: null
+            type: string
+        selected: false
+        title: 代码节点（清洗原始周期）
+        type: code
+        variables:
+        - value_selector:
+          - '1764426599423'
+          - body
+          value_type: string
+          variable: api_body
+      height: 51
+      id: '1764481346057'
+      position:
+        x: 4495.920068966316
+        y: -260.9256202556319
+      positionAbsolute:
+        x: 4495.920068966316
+        y: -260.9256202556319
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - id: key-value-52
+            key: ''
+            type: text
+            value: '{{#1764479942972.final_post_body#}}'
+          type: json
+        error_strategy: fail-branch
+        headers: 'Accept:application/json, text/plain, */*
+
+          saas-slug:dykj:student
+
+          Content-Type:application/json
+
+          Cookie:{{#conversation.cookie#}}'
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 新周报上传请求
+        type: http-request
+        url: https://opcenter.lanqiao.cn/api/v1/svc/sms/evaluation/student/myweeks/
+        variables: []
+      height: 188
+      id: '1764482331078'
+      position:
+        x: 3858.8037021398295
+        y: -860.9433617991193
+      positionAbsolute:
+        x: 3858.8037021398295
+        y: -860.9433617991193
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: "✅ 恭喜！周报已成功提交。 \n\U0001F4C5 周期：{{#conversation.week_detail#}}\n\U0001F4DA\
+          \ 关联课程：{{#conversation.new_name#}} \n您现在可以登录蓝桥官网查看详情，任务结束。\n\n\U0001F4A1\
+          \ 内容摘要：\n{{#1764479942972.final_post_body#}}"
+        selected: false
+        title: 成功回复
+        type: answer
+        variables: []
+      height: 190
+      id: '1764484497326'
+      position:
+        x: 4140.83826331204
+        y: -953.177718762886
+      positionAbsolute:
+        x: 4140.83826331204
+        y: -953.177718762886
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: '❌ 抱歉，周报提交失败。 错误详情：{{#1764482331078.error_message#}}
+
+          可能的原因：
+
+          Cookie 可能刚好过期，请尝试重新输入 "账号 密码" 登录。
+
+          蓝桥服务器暂时不稳定。
+
+          该周期的周报可能已经被创建过了（重复提交）。
+
+          请稍后重试，或检查蓝桥官网。'
+        selected: false
+        title: 失败回复
+        type: answer
+        variables: []
+      height: 198
+      id: '1764484681118'
+      position:
+        x: 4140.83826331204
+        y: -722.5851237368364
+      positionAbsolute:
+        x: 4140.83826331204
+        y: -722.5851237368364
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764481346057'
+          - target_week
+          variable_selector:
+          - conversation
+          - week_detail
+          write_mode: over-write
+        selected: false
+        title: '原始周期赋值 '
+        type: assigner
+        version: '2'
+      height: 83
+      id: '17644855392000'
+      position:
+        x: 5420.873017860484
+        y: 174.92416816717434
+      positionAbsolute:
+        x: 5420.873017860484
+        y: 174.92416816717434
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: constant
+          operation: set
+          value: selecting_week
+          variable_selector:
+          - conversation
+          - current_step
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764481346057'
+          - raw_list
+          variable_selector:
+          - conversation
+          - week_detail
+          write_mode: over-write
+        selected: false
+        title: 多周报状态，并赋值原始周期
+        type: assigner
+        version: '2'
+      height: 109
+      id: '1764486290152'
+      position:
+        x: 5420.873017860484
+        y: -94.08773543661607
+      positionAbsolute:
+        x: 5420.873017860484
+        y: -94.08773543661607
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: 检测到有多个未完成的周报周期，请回复 序号数字 选择： {{#1764481346057.display_text#}}
+        selected: false
+        title: 多周期回复
+        type: answer
+        variables: []
+      height: 134
+      id: '1764491605885'
+      position:
+        x: 5722.873017860484
+        y: -94.08773543661607
+      positionAbsolute:
+        x: 5722.873017860484
+        y: -94.08773543661607
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        code: "function main(inputs) {\n  try {\n    const list = JSON.parse(inputs.list_json);\n\
+          \    const index = parseInt(inputs.user_input) - 1;\n    if (!isNaN(index)\
+          \ && index >= 0 && index < list.length) {\n        return { \n         \
+          \   target_week: list[index], // 提取出 \"2025-11-xx~...\"\n            status:\
+          \ \"SUCCESS\"\n        };\n    }\n  } catch(e) {}\n  return { target_week:\
+          \ \"\", status: \"FAIL\" };\n}"
+        code_language: javascript
+        outputs:
+          status:
+            children: null
+            type: string
+          target_week:
+            children: null
+            type: string
+        selected: false
+        title: 用户回复周期清洗
+        type: code
+        variables:
+        - value_selector:
+          - sys
+          - query
+          value_type: string
+          variable: user_input
+        - value_selector:
+          - conversation
+          - week_detail
+          value_type: string
+          variable: list_json
+      height: 51
+      id: '1764491748731'
+      position:
+        x: 2598.470299827489
+        y: -398.1262332732035
+      positionAbsolute:
+        x: 2598.470299827489
+        y: -398.1262332732035
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: constant
+          operation: set
+          value: normal
+          variable_selector:
+          - conversation
+          - current_step
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764491748731'
+          - target_week
+          variable_selector:
+          - conversation
+          - week_detail
+          write_mode: over-write
+        selected: false
+        title: 最终周期赋值
+        type: assigner
+        version: '2'
+      height: 109
+      id: '1764492040197'
+      position:
+        x: 3255.5789652622125
+        y: -398.1262332732035
+      positionAbsolute:
+        x: 3255.5789652622125
+        y: -398.1262332732035
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: constant
+          operation: set
+          value: waiting_for_content
+          variable_selector:
+          - conversation
+          - current_step
+          write_mode: over-write
+        selected: false
+        title: 环境改变为询问用户学习内容
+        type: assigner
+        version: '2'
+      height: 83
+      id: '1764494903652'
+      position:
+        x: 2932.7634446245893
+        y: -599.2898485586113
+      positionAbsolute:
+        x: 2932.7634446245893
+        y: -599.2898485586113
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: 课程已锁定。请告诉我，您本周具体学习了哪些知识点？
+        selected: false
+        title: 缺失学习内容回复
+        type: answer
+        variables: []
+      height: 115
+      id: '1764495940357'
+      position:
+        x: 3255.5789652622125
+        y: -599.2898485586113
+      positionAbsolute:
+        x: 3255.5789652622125
+        y: -599.2898485586113
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: variable
+          operation: over-write
+          value:
+          - sys
+          - query
+          variable_selector:
+          - conversation
+          - user_content
+          write_mode: over-write
+        - input_type: constant
+          operation: set
+          value: normal
+          variable_selector:
+          - conversation
+          - current_step
+          write_mode: over-write
+        selected: false
+        title: 变量赋值 9
+        type: assigner
+        version: '2'
+      height: 109
+      id: '1764496035994'
+      position:
+        x: 2254.861275083997
+        y: -599.2898485586113
+      positionAbsolute:
+        x: 2254.861275083997
+        y: -599.2898485586113
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: []
+          type: none
+        headers: 'saas-slug:dykj:student
+
+          Cookie:{{#conversation.cookie#}}'
+        method: get
+        params: 'page:1
+
+          page_size:1000'
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 获取往期周报列表
+        type: http-request
+        url: https://opcenter.lanqiao.cn/api/v1/svc/sms/evaluation/student/myweeks/
+        variables: []
+      height: 152
+      id: '1764510324094'
+      position:
+        x: 3858.8037021398295
+        y: 35.14138797913756
+      positionAbsolute:
+        x: 3858.8037021398295
+        y: 35.14138797913756
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        code: "function main(inputs) {\n  let list = [];\n  \n  // 1. 解析 HTTP 返回的数据\n\
+          \  try {\n    let raw = inputs.http_body;\n    // 如果输入是字符串，先转成对象\n    if\
+          \ (typeof raw === 'string') {\n        try { raw = JSON.parse(raw); } catch(e)\
+          \ {}\n    }\n    \n    // 提取核心数据列表 (data.results)\n    // 根据您的输出样本: {\"\
+          data\": {\"results\": [...]}}\n    if (raw.data && raw.data.results && Array.isArray(raw.data.results))\
+          \ {\n        list = raw.data.results;\n    }\n    // 兼容其他可能的结构\n    else\
+          \ if (raw.data && Array.isArray(raw.data)) {\n        list = raw.data;\n\
+          \    }\n    else if (Array.isArray(raw)) {\n        list = raw;\n    }\n\
+          \  } catch (e) { list = []; }\n\n  // 2. 生成供人读的 display_text (简洁版菜单)\n \
+          \ // 格式: \"1. 2025-11-24~2025-11-30 [Python编程基础...]\"\n  let displayTextArr\
+          \ = list.map((item, index) => {\n      // 提取课程名\n      let courses = \"\
+          无课程信息\";\n      if (item.course_names) {\n          if (Array.isArray(item.course_names))\
+          \ {\n              courses = item.course_names.join(\", \");\n         \
+          \ } else {\n              courses = String(item.course_names);\n       \
+          \   }\n      }\n      \n      // 提取日期\n      let date = item.date || \"\
+          未知日期\";\n\n      return `${index + 1}. ${date} [${courses}]`;\n  });\n\n\
+          \  const display_text = displayTextArr.length > 0 ? displayTextArr.join('\\\
+          n') : \"未查询到往期周报\";\n\n  // 3. [关键修正] 生成供机器读的 raw_list\n  // 直接存储完整的对象列表，不删减任何字段！\n\
+          \  const raw_list = JSON.stringify(list);\n\n  return {\n    raw_list,\n\
+          \    display_text\n  };\n}\n\nmodule.exports = main;"
+        code_language: javascript
+        outputs:
+          display_text:
+            children: null
+            type: string
+          raw_list:
+            children: null
+            type: string
+        selected: false
+        title: 往期周报清洗
+        type: code
+        variables:
+        - value_selector:
+          - '1764510324094'
+          - body
+          value_type: string
+          variable: http_body
+      height: 51
+      id: '1764511080329'
+      position:
+        x: 4193.920068966316
+        y: 35.14138797913756
+      positionAbsolute:
+        x: 4193.920068966316
+        y: 35.14138797913756
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: constant
+          operation: set
+          value: selecting_report_to_update
+          variable_selector:
+          - conversation
+          - current_step
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764511080329'
+          - raw_list
+          variable_selector:
+          - conversation
+          - temp_report_list
+          write_mode: over-write
+        selected: false
+        title: 变量赋值 10
+        type: assigner
+        version: '2'
+      height: 109
+      id: '1764511882046'
+      position:
+        x: 4495.920068966316
+        y: 35.14138797913756
+      positionAbsolute:
+        x: 4495.920068966316
+        y: 35.14138797913756
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: '{{#1764511080329.display_text#}}
+
+          以上是为您查询到的往期周报列表，请回复数字序号选择要更新哪一份。'
+        selected: false
+        title: 直接回复 8
+        type: answer
+        variables: []
+      height: 134
+      id: '1764512189067'
+      position:
+        x: 4797.920068966318
+        y: 35.14138797913756
+      positionAbsolute:
+        x: 4797.920068966318
+        y: 35.14138797913756
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        code: "function main(inputs) {\n  let reports = [];\n  \n  // 1. 解析之前的列表数据\n\
+          \  try {\n    let raw = inputs.report_json;\n    if (typeof raw === 'string')\
+          \ {\n        raw = JSON.parse(raw);\n    }\n    if (Array.isArray(raw))\
+          \ {\n        reports = raw;\n    }\n  } catch(e) { return { status: \"FAIL\"\
+          , display_content: \"读取列表失败\" }; }\n\n  // 2. 解析用户选择 (1 -> Index 0)\n  const\
+          \ index = parseInt(inputs.user_input) - 1;\n\n  // 3. 提取数据\n  if (!isNaN(index)\
+          \ && index >= 0 && index < reports.length) {\n      const selected = reports[index];\n\
+          \      \n      // 提取所有核心字段 (兼容不同字段名)\n      const id = selected.week_id\
+          \ || selected.id;\n      const week = selected.date;\n      const summary\
+          \ = selected.summary || \"无总结内容\";\n      const issues = selected.encountered_issues\
+          \ || \"无问题记录\";\n      const solution = selected.solution || \"无解决方案\";\n\
+          \      const plan = selected.next_week_plan || \"无计划内容\";\n      \n    \
+          \  // 处理课程名显示\n      let courseName = \"未知课程\";\n      if (Array.isArray(selected.course_names))\
+          \ {\n          courseName = selected.course_names.join(\", \");\n      }\
+          \ else if (selected.course_names) {\n          courseName = String(selected.course_names);\n\
+          \      }\n\n      // 4. 生成完整的“回显文本”\n      const display = `\U0001F4C5 **周期**:\
+          \ ${week}\\n\U0001F4DA **课程**: ${courseName}\\n\\n\U0001F4DD **总结**: ${summary}\\\
+          n\\n⚠️ **问题**: ${issues}\\n\\n✅ **解决**: ${solution}\\n\\n\U0001F52E **计划**:\
+          \ ${plan}`;\n\n      return {\n          status: \"SUCCESS\",\n        \
+          \  target_report_id: String(id), \n          target_week: week,\n      \
+          \    old_summary: summary,\n          old_issues: issues,      // [新增]\n\
+          \          old_solution: solution,  // [新增]\n          old_plan: plan, \
+          \         // [新增]\n          display_content: display \n      };\n  }\n\n\
+          \  return { \n      status: \"FAIL\", \n      target_report_id: \"\", target_week:\
+          \ \"\", old_summary: \"\", old_issues: \"\", old_solution: \"\", old_plan:\
+          \ \"\", display_content: \"选择无效，请检查序号。\" \n  };\n}\nmodule.exports = main;"
+        code_language: javascript
+        outputs:
+          display_content:
+            children: null
+            type: string
+          old_issues:
+            children: null
+            type: string
+          old_plan:
+            children: null
+            type: string
+          old_solution:
+            children: null
+            type: string
+          old_summary:
+            children: null
+            type: string
+          status:
+            children: null
+            type: string
+          target_report_id:
+            children: null
+            type: string
+          target_week:
+            children: null
+            type: string
+        selected: false
+        title: 代码执行 (锁定周报 & 回显)
+        type: code
+        variables:
+        - value_selector:
+          - sys
+          - query
+          value_type: string
+          variable: user_input
+        - value_selector:
+          - conversation
+          - temp_report_list
+          value_type: string
+          variable: report_json
+      height: 51
+      id: '1764513411691'
+      position:
+        x: 1936.7785783879465
+        y: 585.217736539627
+      positionAbsolute:
+        x: 1936.7785783879465
+        y: 585.217736539627
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: constant
+          operation: set
+          value: waiting_for_update_content
+          variable_selector:
+          - conversation
+          - current_step
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764513411691'
+          - target_report_id
+          variable_selector:
+          - conversation
+          - target_report_id
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764513411691'
+          - old_summary
+          variable_selector:
+          - conversation
+          - old_summary
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764513411691'
+          - target_week
+          variable_selector:
+          - conversation
+          - target_week
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764513411691'
+          - old_issues
+          variable_selector:
+          - conversation
+          - old_issues
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764513411691'
+          - old_solution
+          variable_selector:
+          - conversation
+          - old_solution
+          write_mode: over-write
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1764513411691'
+          - old_plan
+          variable_selector:
+          - conversation
+          - old_plan
+          write_mode: over-write
+        selected: false
+        title: 修改内容环境，给6大变量赋值
+        type: assigner
+        version: '2'
+      height: 239
+      id: '1764513719414'
+      position:
+        x: 2254.861275083997
+        y: 585.217736539627
+      positionAbsolute:
+        x: 2254.861275083997
+        y: 585.217736539627
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: '已锁定该周报，原始内容如下：{{#1764513411691.display_content#}}
+
+          请告诉我您想修改或补充什么内容？ (您可以直接说“把Java改成Python”，或者“在总结里补充一点V模型的内容”)'
+        selected: false
+        title: 修改或补充回复
+        type: answer
+        variables: []
+      height: 166
+      id: '1764514840061'
+      position:
+        x: 2598.470299827489
+        y: 585.217736539627
+      positionAbsolute:
+        x: 2598.470299827489
+        y: 585.217736539627
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        items:
+        - input_type: variable
+          operation: over-write
+          value:
+          - sys
+          - query
+          variable_selector:
+          - conversation
+          - user_content
+          write_mode: over-write
+        - input_type: constant
+          operation: set
+          value: normal
+          variable_selector:
+          - conversation
+          - current_step
+          write_mode: over-write
+        selected: false
+        title: 改为平常环境，赋值学习内容
+        type: assigner
+        version: '2'
+      height: 109
+      id: '1764516486086'
+      position:
+        x: 1936.7785783879465
+        y: 1089.3158548020633
+      positionAbsolute:
+        x: 1936.7785783879465
+        y: 1089.3158548020633
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params: {}
+          mode: chat
+          name: qwen3-max
+          provider: langgenius/openai_api_compatible/openai_api_compatible
+        prompt_template:
+        - id: 598541c0-4ff2-472e-bade-515ea581efb8
+          role: system
+          text: "你是一个周报内容融合助手。\n你的任务是：根据用户的修改指令，更新旧的周报内容，并输出一个标准的 JSON 字符串。\n\n###\
+            \ 输入数据：\n1. **旧周报**:\n   - [Summary]: {{#conversation.old_summary#}}\n\
+            \   - [Issues]: {{#conversation.old_issues#}}\n   - [Solution]: {{#conversation.old_solution#}}\n\
+            \   - [Plan]: {{#conversation.old_plan#}}\n2. **用户指令**: \"{{#conversation.user_content#}}\"\
+            \n\n### 执行逻辑：\n1. 分析用户的需求是针对哪个板块（总结、问题、计划）的修改，还是全局补充。\n2. 将新内容自然地融入到旧内容中，保持语气的连贯性。\n\
+            3. 如果用户只提到了某个板块，其他板块请保持原样。\n\n### ⛔️ 绝对输出规则:\n1. **你必须且只能输出一段纯 JSON 代码**。\n\
+            2. **不要**输出 Markdown 代码块标记（如 ```json ... ```）。\n3. **不要**在 JSON 前后说任何废话。\n\
+            4. JSON 必须包含以下 4 个字段：\n   - \"summary\"\n   - \"encountered_issues\"\n\
+            \   - \"solution\"\n   - \"next_week_plan\""
+        - id: e61becf2-cd92-4ed4-975e-725cb9e6d96f
+          role: user
+          text: 请输出修改后的完整 JSON。
+        selected: false
+        structured_output:
+          schema:
+            additionalProperties: false
+            properties:
+              encountered_issues:
+                description: 本周问题
+                type: string
+              next_week_plan:
+                description: 下周计划
+                type: string
+              solution:
+                description: 解决方案
+                type: string
+              summary:
+                description: 本周总结
+                type: string
+            required: []
+            type: object
+        structured_output_enabled: false
+        title: 智能融合llm节点
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1764516876254'
+      position:
+        x: 2238.8346356118504
+        y: 1089.3158548020633
+      positionAbsolute:
+        x: 2238.8346356118504
+        y: 1089.3158548020633
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - id: key-value-202
+            key: ''
+            type: text
+            value: '{{#1764750231351.final_post_body#}}'
+          type: json
+        error_strategy: fail-branch
+        headers: 'Cookie:{{#conversation.cookie#}}
+
+          saas-slug:dykj:student
+
+          Content-Type:application/json
+
+          accept:application/json, text/plain, */*
+
+          referer:https://saas.lanqiao.cn/
+
+          origin:https://saas.lanqiao.cn
+
+          accept-language:zh-CN,zh;q=0.9'
+        method: put
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 往期周报上传节点
+        type: http-request
+        url: https://opcenter.lanqiao.cn/api/v1/svc/sms/evaluation/student/myweeks/{{#conversation.target_report_id#}}/
+        variables: []
+      height: 208
+      id: '1764517829108'
+      position:
+        x: 2932.7634446245893
+        y: 1089.3158548020633
+      positionAbsolute:
+        x: 2932.7634446245893
+        y: 1089.3158548020633
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: 周报更新成功！ 已根据您的要求：“{{#conversation.user_content#}}” 完成了修改。
+        selected: false
+        title: 上传成功回复
+        type: answer
+        variables: []
+      height: 119
+      id: '1764518069509'
+      position:
+        x: 3255.5789652622125
+        y: 1089.3158548020633
+      positionAbsolute:
+        x: 3255.5789652622125
+        y: 1089.3158548020633
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: '❌ 抱歉，周报更新失败。
+
+          🔧 错误详情： {{#1764517829108.error_message#}}
+
+          (系统提示：如果显示 401 或 403，通常意味着登录已过期)
+
+          💡 建议操作：
+
+          您的登录凭证 (Cookie) 可能已失效。请直接回复您的 账号和密码 (格式：账号 密码)，我会为您重新登录。
+
+          如果网络不稳定，请稍后再次尝试发送“更新周报”。'
+        selected: false
+        title: 上传失败回复
+        type: answer
+        variables: []
+      height: 246
+      id: '1764518095133'
+      position:
+        x: 3255.5789652622125
+        y: 1248.3158548020638
+      positionAbsolute:
+        x: 3255.5789652622125
+        y: 1248.3158548020638
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: '👋 您好！我是您的蓝桥周报助手。
+
+
+          我的核心技能是帮您 **全自动** 处理周报。我注意到您似乎在闲聊，如果您需要我的帮助，请直接下达以下指令：
+
+
+          🚀 **新建周报**
+
+          例如：“新建周报，我这周学了 Java 多线程。”
+
+          *(我会自动为您匹配课程、生成内容并提交)*
+
+
+          🔄 **更新周报**
+
+          例如：“我要更新周报”
+
+          *(我会为您列出最近提交的周报，供您选择修改)*
+
+
+          请告诉我，您现在想做什么？'
+        selected: false
+        title: 闲聊回复
+        type: answer
+        variables: []
+      height: 259
+      id: '1764518620531'
+      position:
+        x: 3858.8037021398295
+        y: 217.01830734619497
+      positionAbsolute:
+        x: 3858.8037021398295
+        y: 217.01830734619497
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        author: Ganyc
+        desc: ''
+        height: 457
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"font-size:
+          12px;","text":"【全局模式分支】负责根据 current_step 拦截用户输入，分发到对应的处理逻辑。 ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"textStyle":"font-size:
+          12px;","value":1},{"children":[{"detail":0,"format":0,"mode":"normal","style":"font-size:
+          12px;","text":"🔹 CASE 1","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"textStyle":"font-size:
+          12px;","value":2},{"children":[{"detail":0,"format":0,"mode":"normal","style":"font-size:
+          12px;","text":" (selecting_course): 用户正在选关联课程 (回\"1\") -> 走选课逻辑。","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"textStyle":"font-size:
+          12px;","value":3},{"children":[{"detail":0,"format":0,"mode":"normal","style":"font-size:
+          12px;","text":"🔹 CASE 2","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"textStyle":"font-size:
+          12px;","value":4},{"children":[{"detail":0,"format":0,"mode":"normal","style":"font-size:
+          12px;","text":"(waiting_for_content): 用户正在补充新建周报的内容 (回\"学了Java\") -> 走存内容逻辑。
+          ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"textStyle":"font-size:
+          12px;","value":5},{"children":[{"detail":0,"format":0,"mode":"normal","style":"font-size:
+          12px;","text":"🔹 CASE 3","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"textStyle":"font-size:
+          12px;","value":6},{"children":[{"detail":0,"format":0,"mode":"normal","style":"font-size:
+          12px;","text":" (selecting_week): 用户正在选新建哪一周 (回\"1\") -> 走选周逻辑。 ","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"textStyle":"font-size:
+          12px;","value":7},{"children":[{"detail":0,"format":0,"mode":"normal","style":"font-size:
+          12px;","text":"🔹 CASE 4 (selecting_report_to_update): 用户正在选更新哪份往期周报 (回\"1\")
+          -> 走锁定旧周报逻辑。 🔹 CASE 5 (waiting_for_update_content): 用户正在补充更新内容 (回\"补充V模型\")
+          -> 走内容融合逻辑。 🔸 ELSE (normal): 正常对话 -> 走意图识别 LLM。","type":"text","version":1}],"direction":null,"format":"","indent":0,"type":"listitem","version":1,"textStyle":"font-size:
+          12px;","value":8}],"direction":null,"format":"","indent":0,"type":"list","version":1,"textStyle":"font-size:
+          12px;","listType":"bullet","start":1,"tag":"ul"}],"direction":null,"format":"","indent":0,"type":"root","version":1,"textStyle":"font-size:
+          12px;"}}'
+        theme: blue
+        title: ''
+        type: ''
+        width: 240
+      height: 457
+      id: '1764519647018'
+      position:
+        x: 639.9385744620831
+        y: 245.02002845756354
+      positionAbsolute:
+        x: 639.9385744620831
+        y: 245.02002845756354
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-note
+      width: 240
+    - data:
+        code: "function main(inputs) {\n  // --- 1. ID 清洗函数 ---\n  function cleanID(input)\
+          \ {\n      if (!input) return [];\n      let parsed = input;\n      try\
+          \ { while (typeof parsed === 'string') parsed = JSON.parse(parsed); } catch(e){}\n\
+          \      if (!parsed) return [];\n      let arr = Array.isArray(parsed) ?\
+          \ parsed : [parsed];\n      return arr.map(i => parseInt(i)).filter(n =>\
+          \ !isNaN(n));\n  }\n\n  // --- 2. 文本清洗函数 (修复 422 核心) ---\n  // 无论 LLM 给的是数组还是字符串，都统统转成字符串\n\
+          \  function forceString(input) {\n      if (!input) return \"\";\n     \
+          \ if (typeof input === 'string') return input;\n      if (Array.isArray(input))\
+          \ return input.join('\\n'); // 数组用换行拼接\n      return JSON.stringify(input);\
+          \ // 其他对象转字符串\n  }\n\n  // --- 3. 解析 LLM 的响应 ---\n  let content = {};\n\
+          \  try {\n    let text = inputs.llm_response || \"{}\";\n    // 去掉 markdown\
+          \ 标记\n    text = text.replace(/```json/g, \"\").replace(/```/g, \"\").trim();\n\
+          \    content = JSON.parse(text);\n  } catch (e) {\n    // 解析失败时的兜底\n   \
+          \ content = {};\n  }\n\n  // --- 4. 组装最终 Body ---\n  // 这里我们从解析出来的 content\
+          \ 对象里取值，而不是直接从 inputs 里取\n  const payload = {\n    report_id: inputs.report_id,\n\
+          \    week_detail: inputs.week,\n    \n    // 关键：从 content 对象取值，并强制转字符串\n\
+          \    summary: forceString(content.summary),\n    encountered_issues: forceString(content.encountered_issues),\n\
+          \    solution: forceString(content.solution),\n    next_week_plan: forceString(content.next_week_plan),\n\
+          \    \n    // 处理 ID\n    bind_courses: cleanID(inputs.bind_str),\n    yk_course_ids:\
+          \ cleanID(inputs.yk_str)\n  };\n\n  return {\n    final_post_body: JSON.stringify(payload)\n\
+          \  };\n}\n\nmodule.exports = main;"
+        code_language: javascript
+        outputs:
+          final_post_body:
+            children: null
+            type: string
+        selected: false
+        title: 各部分清洗
+        type: code
+        variables:
+        - value_selector:
+          - '1764516876254'
+          - text
+          value_type: string
+          variable: llm_response
+        - value_selector:
+          - conversation
+          - target_report_id
+          value_type: string
+          variable: report_id
+        - value_selector:
+          - conversation
+          - target_week
+          value_type: string
+          variable: week
+      height: 51
+      id: '1764750231351'
+      position:
+        x: 2598.470299827489
+        y: 1089.3158548020633
+      positionAbsolute:
+        x: 2598.470299827489
+        y: 1089.3158548020633
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    viewport:
+      x: -567.926351770976
+      y: 498.23888107899194
+      zoom: 0.3789291416276001
+  rag_pipeline_variables: []
